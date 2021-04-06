@@ -14,7 +14,7 @@ On your Linux machine:
 ![image](https://user-images.githubusercontent.com/20463821/113479009-48a07000-9484-11eb-9c23-67951efc4b59.png)
 
 Run `sudo apt update` to update the necessary packages.
-Afterwards, install apache2 using `sudo apt install apache2`, confirm apache2 service is running using `sudo systemctl status apache2`.
+Afterwards, install apache2 using `sudo apt install apache2`, confirm apache2 service is running using `sudo systemctl status apache2`. Enable firewall using `sudo ufw enable` after add http rule in the security group. Then allow apache traffic on the server `sudo ufw allow 'apache`
 ![image](https://user-images.githubusercontent.com/20463821/113479284-17c13a80-9486-11eb-8502-79527c5b83b6.png)
 
 Install Mysql and run the configuration script, using `sudo apt install mysl-server` and `sudo mysql_secure_installation`
