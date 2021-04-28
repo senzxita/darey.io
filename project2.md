@@ -39,6 +39,7 @@ Now let's access nginx landing page using the browser using the EC2 public insta
 - Install MySQL
 
 Install MySQL using `sudo apt install mysql-server` and run the installation script  `sudo mysql-secure-installation` and accept the follow the prompt accordingly, login to the MySQL `sudo mysql` afterwards.
+
 ![image](https://user-images.githubusercontent.com/20463821/116459000-2f10ff00-a85d-11eb-9614-1f4418928600.png)
 
 - Install PHP
@@ -48,18 +49,23 @@ To Install PHP, one has to install *php-fpm*; PHP fastCGT process manager and *p
 
 - Configure Nginx to use PHP processor
 Create a root web directory to use for the project `sudo mkdir /var/www/projectLEMP` and assign ownership to the directory `sudo chown -R ubuntu:ubuntu /var/www/projectLEMP`
+
 Create a configuration file in Niginx/sites-available `sudo nano /etc/nginx/sites-available/projectLEMP` and add some configurations to it.
 
 ![image](https://user-images.githubusercontent.com/20463821/116462682-a21c7480-a861-11eb-9dda-775cf46aec76.png)
 
 ![image](https://user-images.githubusercontent.com/20463821/116462724-b496ae00-a861-11eb-9501-d7ec661edf88.png)
 
-Activate the configuration written in sites-available/projectLEMP file, link to the config file in Nginx/sites-enabled `sudo ln -s /etc/nginx/sites-available/project/ /etc/nginx/sites-enabled/`. This is to tell Nginx to use the file when reloaded.
+Activate the configuration written in sites-available/projectLEMP file, link to the config file in Nginx/sites-enabled `sudo ln -s /etc/nginx/sites-available/project/ /etc/nginx/sites-enabled/`, this is to tell Nginx to use the file when reloaded.
+
 
 Test the configuration for any syntax error `sudo nginx -t`
+
 ![image](https://user-images.githubusercontent.com/20463821/116463245-61712b00-a862-11eb-9108-614b5c1b8dff.png)
 
+
 Disable default Nginx host listening on port 80 in sites-enabled/default `sudo unlink /etc/nginx/sites-enabled/default` and reload Nginx service `sudo systemctl reload nginx` 
+
 ![image](https://user-images.githubusercontent.com/20463821/116467005-1d345980-a867-11eb-85f7-8cce73255fbc.png)
 
 Create index.html file in /var/www/projectLEMP diretory and go to browser to view the page using public Ip http://52.87.255.3:80
@@ -76,6 +82,7 @@ Let index.php take precedence over index.html in sites-available
 ![image](https://user-images.githubusercontent.com/20463821/116470000-c2046600-a86a-11eb-911f-21f1f84ce671.png)
 
 Create a info.php file in /var/www/projectLEMP directory to validate Nginx can get .php files to PHP processor. Access the page on your browser using your DNS name or Instance public address `http://instance-public-ip-add/info.php`.
+
 
 ![image](https://user-images.githubusercontent.com/20463821/116470692-abaada00-a86b-11eb-9355-37fc611504e2.png)
 
