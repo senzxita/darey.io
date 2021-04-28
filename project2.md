@@ -30,4 +30,8 @@ or using EC2 instance IPv4 `curl http:172.31.53.84:80`
 
 ![image](https://user-images.githubusercontent.com/20463821/113778021-c9c96280-9723-11eb-90b2-e2e7e3a50840.png)
 
-Now let's access nginx landing page using the browser
+Now let's access nginx landing page using the browser using the EC2 public instance
+
+![image](https://user-images.githubusercontent.com/20463821/116458055-10f6cf00-a85c-11eb-8b09-b3c28a135d75.png)
+
+
