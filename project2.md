@@ -85,6 +85,32 @@ To Install PHP, one has to install *php-fpm*; PHP fastCGT process manager and *p
 
 ![image](https://user-images.githubusercontent.com/20463821/116470692-abaada00-a86b-11eb-9355-37fc611504e2.png)
 
+- Ensure to always remove the info.php page because it contains sensitive information about the PHP environment, using `sudo rm /var/www/projectLEMP/info.php`
+
+
+## Retrieve Data from MySQL with PHP
+- Login to MySQL, create a database and a user; grant user full priviledges on the database using mysql_native_password as the default authentication method, exit afterwards.
+
+![image](https://user-images.githubusercontent.com/20463821/116485733-d739be80-a883-11eb-80bd-40497f93a9dc.png)
+
+- Login to MySQL console using the user credentials created and confirm you access the database.
+![image](https://user-images.githubusercontent.com/20463821/116485912-53340680-a884-11eb-9b3c-c63b48993570.png)
+
+- Create a table and add items to the table and view table.
+![image](https://user-images.githubusercontent.com/20463821/116486567-dbff7200-a885-11eb-8cab-4372484b68a8.png)
+
+![image](https://user-images.githubusercontent.com/20463821/116486580-e7529d80-a885-11eb-8f74-68fed8b0eb23.png)
+
+- Create a PHP script that connects to MySQL and query for content in the project directory `nano /var/www/projectLEMP/todo_list.php`, save and close after editing.
+- Access the page from browser using http://DNS-or-instance-ip/todo_list.php ie http://52.87.255.3/todo_list.php
+
+![image](https://user-images.githubusercontent.com/20463821/116487071-056ccd80-a887-11eb-96ad-8e67d1efd0da.png)
+
+ 
+
+
+
+
 
 
 
