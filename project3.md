@@ -75,6 +75,10 @@ MERN ---> MongoDB, ExpressJS, ReactJS, Node.js
 - In the terminal, create .env file in the root project directory `nano .env` paste the connection string copied and save the file.
 - Replace <password> with your password and <MyFirstDatabase> with name of the database you just created.
 - Update in index.js file to reflect .env, to enable Node.js to connect to the database.
- - start the node server `node index.js`
+- start the node server `node index.js`
 
+![image](https://user-images.githubusercontent.com/20463821/116608105-b7110a80-a92a-11eb-9740-91c141cb4bc0.png)
+
+## Testing Backend Code with RESTful API
+- Making use of Postman to test our API, download and install Postman 
 
