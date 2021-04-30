@@ -131,3 +131,18 @@ $ nano package.json
 ![image](https://user-images.githubusercontent.com/20463821/116718298-bb443300-a9d1-11eb-9a81-a04da7c4ccb2.png)
 
 ## Create React Components
+- From Todo directory, change directory to the client directory, then to src directory `cd client/src`
+- Create components directory/folder in src directory and change directory to the components directory `mkdir components && cd components`
+- Create Input.js, ListTodo.js and Todo.js files in components directory `touch Input.js ListTodo.js Todo.js`
+- Open Input.js file `vi Input.js`, copy some code from the documentation and paste in the editor, save the file.
+- Go back to the client directory `cd ../..` 
+- Install Axios `npm install axios`, a promise based HTTP client for the browser and node.js
+- Go to components directory `cd src/components`
+- Edit ListTodo.js file and save. Do same for Todo.js file
+- Change to src directory `cd ..`
+- Edit App.js, App.css and index.css file, copy codes from the documentation and save the files respectively.
+- Change directory back to Todo directory and run command `npm run dev`
+
+![image](https://user-images.githubusercontent.com/20463821/116736041-43810300-a9e7-11eb-8a5d-895f330a2c13.png)
+
+- 
