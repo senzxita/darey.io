@@ -80,5 +80,54 @@ MERN ---> MongoDB, ExpressJS, ReactJS, Node.js
 ![image](https://user-images.githubusercontent.com/20463821/116608105-b7110a80-a92a-11eb-9740-91c141cb4bc0.png)
 
 ## Testing Backend Code with RESTful API
-- Making use of Postman to test our API, download and install Postman 
+- Making use of Postman to test our API, download and install Postman
+- Create a token for your API on https://app.asana.com  
+- Create a POST request to http://54.84.247.41:5000/api/todos, so that an item is added to the todo database
+- Add the token created from asana to Postman, under Authorization tab
 
+![image](https://user-images.githubusercontent.com/20463821/116699973-22f08300-a9be-11eb-9355-b64398a64cd2.png)
+
+- Add a key: "Content-Type" and value: "application/json", under the Headers tab
+![image](https://user-images.githubusercontent.com/20463821/116700316-8bd7fb00-a9be-11eb-9266-3511f5064af4.png)
+
+- To add the item to the database, write the item in the Body tab (raw), file format JSON, and click on the save button.
+![image](https://user-images.githubusercontent.com/20463821/116701014-55e74680-a9bf-11eb-8d0c-d148f1579015.png)
+
+- Status 200 indicates that the POST request was succesful.
+- Create a GET request that returns all existing returns from the Todo database, making use of the same token
+
+![image](https://user-images.githubusercontent.com/20463821/116701983-6f3cc280-a9c0-11eb-94b2-51aa007414fc.png)
+
+- Create a DELETE request that delete the content specified in the Todo database
+???
+????
+
+## Frontend Creation
+- Use `create-read-app` command to scaffold the TODO app `npx create-react-app client` 
+- The command above creates a client directory in the Todo directory, this directory contains the React app
+![image](https://user-images.githubusercontent.com/20463821/116708504-ad89b000-a9c7-11eb-8a29-f2ac2cbdae95.png)
+
+- To test the react app, one has to install some dependencies
+- Install concurrently, which enables one to run more than one command on the terminal `npm install concurrently --save-dev`
+- Install nodemon, a dependency for the react app `npm install nodemon --save-dev`. Used to restart the server and load new changes.
+- Go to Todo directory, edit script block in the package.json file and save
+```
+$ cd ..
+$ nano package.json
+```
+## Configure Proxy 
+- Go to the client directory, `cd client`
+- Open package.json file and add "proxy": "http://54.84.247.41:5000" to the file, save the file afterwards. To enable us access the application directly from browser.
+- In the Todo directory run `npm run dev`
+
+![image](https://user-images.githubusercontent.com/20463821/116718014-71f3e380-a9d1-11eb-932c-46f8a4ffda91.png)
+
+- Open port 3000 on your AWS console
+
+![image](https://user-images.githubusercontent.com/20463821/116717710-17f31e00-a9d1-11eb-8aaf-14af9fab504c.png)
+
+- To access the application your browser, use http://54.84.247.41:3000
+
+![image](https://user-images.githubusercontent.com/20463821/116718298-bb443300-a9d1-11eb-9a81-a04da7c4ccb2.png)
+
+## Create React Components
