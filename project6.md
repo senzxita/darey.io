@@ -41,6 +41,7 @@ Dbserver instance
 ![image](https://user-images.githubusercontent.com/20463821/117069898-f4a7d600-ad24-11eb-93b9-64464788c333.png)
 
 - To see all mounts and free spaces available on the server use `df -h` command
+
 ![image](https://user-images.githubusercontent.com/20463821/117070327-7a2b8600-ad25-11eb-9236-79d903c5ff07.png)
 
 - Using `gdisk` utility, create a single partition for each of the 3 disks `sudo gdisk /dev/xvdf`, `sudo gdisk /dev/xvdg` and `sudo gdisk /dev/xvdh` respectively
@@ -96,10 +97,102 @@ Dbserver instance
 
 ![image](https://user-images.githubusercontent.com/20463821/117079688-2b391d00-ad34-11eb-8293-a4a23e1760de.png)
 
-- Mount /var/www/html on apps-lv logical volume `sudo mount /dev/webdata-vg/apps-lv /var/www/html/`
+- Mount /var/www/html on apps-lv logical volume `sudo mount /dev/webdata-vg/apps-lv /var/www/html`
 
 ![image](https://user-images.githubusercontent.com/20463821/117079808-72bfa900-ad34-11eb-9ab1-b8cd65290835.png)
 
+- Backup all files in log directory /var/log into /home/recovery/logs using rsync utility `sudo rsync -av /var/log/. /home/recovery/logs`
+![image](https://user-images.githubusercontent.com/20463821/117081217-5ffaa380-ad37-11eb-8c1b-b83224b87988.png)
+
+
+- Mount /var/log on logs-lv logical volume `sudo mount /dev/webdata-vg/logs-lv /var/log`
+- Restore log files in /home/recovery/logs directory back into /var/log directory. `sudo rsync -av /home/recovery/logs/. /var/log
+
+![image](https://user-images.githubusercontent.com/20463821/117081575-0e064d80-ad38-11eb-855e-8372bc1a191e.png)
+
+- Use `sudo blkid` to find the UUID of each device, copy the values to a notepad
+
+![image](https://user-images.githubusercontent.com/20463821/117082312-d1d3ec80-ad39-11eb-974b-1afaabc64a80.png)
+
+- Edit /etc/fstab file so that the mount configuration will persist after restart `sudo vi /etc/stab`, enter the values of the UUID copied earlier and save the file
+
+![image](https://user-images.githubusercontent.com/20463821/117082190-828dbc00-ad39-11eb-84c2-c6acb50d9c55.png)
+
+- Test the configuration and reload the daemon
+```
+sudo mount -a
+sudo systemctl daemon-reload
+```
+- To verify setup, run `df -h`
+
+![image](https://user-images.githubusercontent.com/20463821/117082705-d947c580-ad3a-11eb-836e-2a79ac7a29e5.png)
+
+## Prepare Database server
+- For the dbserver instance on AWS console, create 3 volumes from Elastic Block Store in the same availability zone as the dbserver instance and attach to the dbserver instance
+
+![image](https://user-images.githubusercontent.com/20463821/117083794-6e4bbe00-ad3d-11eb-8c5c-6dc8c73db68b.png)
+
+- On the dbserver instance termninal use `lsblk` to inspect the block devices attached to the server
+
+![image](https://user-images.githubusercontent.com/20463821/117083980-d8fcf980-ad3d-11eb-85cc-d8bc4a557f29.png)
+
+- `df -h` to see mounts and free spaces on the server
+
+![image](https://user-images.githubusercontent.com/20463821/117084061-0f3a7900-ad3e-11eb-81e9-22db453d479c.png)
+
+- Using gdisk utility, create a single partition for each of the 3 disks `sudo gdisk /dev/xvdf`, `sudo gdisk /dev/xvdg` and `sudo gdisk /dev/xvdh` respectively
+
+![image](https://user-images.githubusercontent.com/20463821/117084177-69d3d500-ad3e-11eb-86e3-e868bfd4cf07.png)
+
+- Check the newly configured partition on each disk using `lsblk`
+
+![image](https://user-images.githubusercontent.com/20463821/117084336-d949c480-ad3e-11eb-8242-2de3f95dba75.png)
+
+- Install lvm2 package `sudo yum install lvm2`
+- Check available partitions on the server use `sudo lvmdiskscan`
+- Mark each of the 3 disks as physical volume to be used as LVM using `pvcreate` utility
+
+![image](https://user-images.githubusercontent.com/20463821/117084579-74db3500-ad3f-11eb-96fa-9d85313bb96d.png)
+
+- Verify the physical volumes using `sudo pvs`
+- Create volume group named webdata-vg using vgcreate utility and add the 3 physical volumes to the volume group
+
+![image](https://user-images.githubusercontent.com/20463821/117084836-21b5b200-ad40-11eb-91f0-1b9b2456bcec.png)
+
+- Verify the volume group has been created successfully
+
+![image](https://user-images.githubusercontent.com/20463821/117084876-385c0900-ad40-11eb-8236-9e86d5b21cbe.png)
+
+- Create 2 logical volumes using lvcreate utility 
+
+![image](https://user-images.githubusercontent.com/20463821/117085003-912ba180-ad40-11eb-9857-fc563e9fffcf.png)
+
+- Verify the logical volume has been successfully created `sudo lvs`
+
+![image](https://user-images.githubusercontent.com/20463821/117085088-c2a46d00-ad40-11eb-8888-c13c43171b9f.png)
+
+- Verify the entire setup 
+
+![image](https://user-images.githubusercontent.com/20463821/117085160-f089b180-ad40-11eb-87c7-37d49c4579d6.png)
+
+![image](https://user-images.githubusercontent.com/20463821/117085206-1020da00-ad41-11eb-99dc-dc72b7a0de12.png)
+
+- Format the logical volumes with ext4 filesystem using mkfs.ext4
+
+![image](https://user-images.githubusercontent.com/20463821/117085720-6d695b00-ad42-11eb-8633-a2bad622439e.png)
+
+- Create /db directory to store the database `sudo mkdir -p /db`
+- Create /home/recovery/logs to store backup of log data `sudo mkdir -p /hoime/recovery/logs`
+- Mount /db on dv-lv logical volume `sudo mount /dev/webdata-vg/db-lv /db`
+- Use rsync utility to backup all files in log directory /var/log into /home/recovery/logs
+
+- ![image](https://user-images.githubusercontent.com/20463821/117086029-5bd48300-ad43-11eb-8479-c1f4bba91b69.png)
+
+- Mount /var/log on logs-lv logical volume 
+
+
+
+ 
 
 
 
