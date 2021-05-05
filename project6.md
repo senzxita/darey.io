@@ -190,9 +190,138 @@ sudo systemctl daemon-reload
 
 - Mount /var/log on logs-lv logical volume 
 
+![image](https://user-images.githubusercontent.com/20463821/117147674-662b6700-adad-11eb-98e8-30fd0181eb90.png)
+
+- Restore log files back into /var/log `sudo rysnc -av /home/recovery/logs/. /var/log`
+
+![image](https://user-images.githubusercontent.com/20463821/117147937-a4c12180-adad-11eb-866c-01a2ff5087d2.png)
+
+- Use `sudo blkid` to find the UUID of each device 
+
+![image](https://user-images.githubusercontent.com/20463821/117148508-2d3fc200-adae-11eb-95c3-a6f3e5ccdc79.png)
+
+- Edit and update /etc/fstab file so that the mount configuration will persist after restart `sudo vi /etc/fstab`
+- Test the configuration and reload daemon 
+```
+sudo mount -a
+sudo systemctl daemon-reload
+```
+- To verify the setup, run `df -h`
+
+![image](https://user-images.githubusercontent.com/20463821/117148395-16996b00-adae-11eb-99a7-df423f85dc1c.png)
+
+## Install Wordpress on the Webserver Instance
+
+- Go to the webserver instance terminal, update the repository `sudo yum -y update`
+- Install wget, Apache, and its dependencies `sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json`
+- Start Apache service and confirm the service is running
+```
+sudo systemctl enable httpd
+sudo systemctl start httpd
+sudo systemctl status httpd
+```
+
+![image](https://user-images.githubusercontent.com/20463821/117150310-ee127080-adaf-11eb-8633-aa74a2c19152.png)
+
+- Install PHP and its dependencies
+```
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+sudo yum module list php
+sudo yum module reset php
+sudo yum module enable php:remi-7.4
+sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+sudo systemctl start php-fpm
+sudo systemctl enable php-fpm
+sudo setsebool -P httpd_execmem 1
+```
+- Restart Apache service `sudo systemctl restart httpd`
+- Create a wordpress folder `mkdir wordpress`
+- Change directory to the wordpress directory `cd wordpress`
+- Download wordpress 
+```
+sudo wget http://wordpress.org/latest.tar.gz
+sudo tar xzvf latest.tar.gz
+sudo rm -rf latest.tar.gz
+```
+- Copy wordpress/wp-config-sample.php file to wordpress/wp-config.php `sudo cp wordpress/wp-config-sample.php wordpress/wp-config.php`
+- Copy wordpress file recursively into /var/www/html `sudo cp -R wordpress /var/www/html/`
+- Configure SELinux policies
+```
+sudo chown -R apache:apache /var/www/html/wordpress
+sudo chown -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+sudo setsebool -P httpd_can_network_connect=1
+```
+## Configure Database to work with Wordpress
+- Go to the dbserver instance terminal, install mysql server 
+```
+sudo yum install https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+sudo yum repolist enabled | grep "mysql.*-community.*"
+sudo yum repolist all | grep mysql
+```
+Disable Mysql 5.7 and enable version 8.0 
+```
+sudo yum-config-manager --disable mysql57-community
+sudo yum-config-manager --enable mysql80-community
+```
+Confirm mysql 8.0 has been enabled `sudo yum repolist enabled | grep mysql`
+
+![image](https://user-images.githubusercontent.com/20463821/117157478-890e4900-adb6-11eb-9fb1-296d26b291ca.png)
+
+- Disable mysql module `sudo yum module disable mysql`
+- Install mysql community server `sudo yum install mysql-community-server`
+- Start the mysql service and check its status
+```
+sudo systemctl start mysqld
+sudo systemctl status mysqld
+```
+![image](https://user-images.githubusercontent.com/20463821/117158574-70526300-adb7-11eb-930b-920fd7f9c58d.png)
+
+- Update /etc/my.cnf file, insert `bind-address=0.0.0.0` and save file
+- A superuser account 'root@localhost' is created, and a password is generated automatically. Reveal the password using `sudo grep 'temporary password' /var/log/mysqld.log`
+- Change the password to your custom password 
+```
+$ sudo mysql -u root -p
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY <newpassword>
+```
+- Create a database 'wordpress' `CREATE DATABASE wordpress;`
+- Create a user and by grant it all privileges on the wordpress database
+```
+CREATE USER '<username>'@'<webserver-private-ip>' IDENTIFIED WITH mysql_native_password BY '<userpassword>';
+
+GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<webserver-private-ip>' WITH GRANT OPTION;
+```
+![image](https://user-images.githubusercontent.com/20463821/117185298-9a188380-add1-11eb-9d56-abe8daaec073.png)
+
+- Flush privileges and show databases
+
+![image](https://user-images.githubusercontent.com/20463821/117181151-d5fd1a00-adcc-11eb-8d44-9b0b40b755a5.png)
 
 
- 
+
+
+## Configure Wordpress To Connect To Remote Database
+
+- On AWS Console, open port 3306 and add webserver's private ip address to the source of the IP
+
+![image](https://user-images.githubusercontent.com/20463821/117181630-59b70680-adcd-11eb-8a02-ebb4535bf23e.png)
+
+- On the Webserver instance (Serves as a client), connect to the mysql database and show the databases available
+
+![image](https://user-images.githubusercontent.com/20463821/117185104-62114080-add1-11eb-80fa-526a56d7d2a3.png)
+
+- Open port 80 On AWS Console webserver instance
+
+![image](https://user-images.githubusercontent.com/20463821/117186740-0e075b80-add3-11eb-9b56-2371e09f6254.png)
+
+- Open in browser http://webserver-public-ip:80
+
+![image](https://user-images.githubusercontent.com/20463821/117187634-085e4580-add4-11eb-808c-495734afa7ca.png)
+
+
+
+
+
 
 
 
