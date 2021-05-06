@@ -297,9 +297,6 @@ GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<webserver-private-ip>
 
 ![image](https://user-images.githubusercontent.com/20463821/117181151-d5fd1a00-adcc-11eb-8d44-9b0b40b755a5.png)
 
-
-
-
 ## Configure Wordpress To Connect To Remote Database
 
 - On AWS Console, open port 3306 and add webserver's private ip address to the source of the IP
@@ -318,7 +315,29 @@ GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<webserver-private-ip>
 
 ![image](https://user-images.githubusercontent.com/20463821/117187634-085e4580-add4-11eb-808c-495734afa7ca.png)
 
+- On webserver terminal, change directory to wordpress folder `cd /var/www/html/wordpress`
+- list the files and folders in the directory `ls`
+- Edit wp-config.php file with your mysql details `sudo vi wp-config.php`
 
+![image](https://user-images.githubusercontent.com/20463821/117349336-3068aa00-aea3-11eb-9132-98f9086733f3.png)
+
+- Go to your browser and search for http://54.227.195.225/wordpress/, a wordpress installation page comes up
+
+![image](https://user-images.githubusercontent.com/20463821/117349152-fac3c100-aea2-11eb-9af5-7b88e4e7bf5c.png)
+
+- After Wordpress has been installed successfully, click on login 
+
+![image](https://user-images.githubusercontent.com/20463821/117349654-8ccbc980-aea3-11eb-91e1-0d436ec0a1a6.png)
+
+- Enter your credentials and click on the "Log in" button 
+
+![image](https://user-images.githubusercontent.com/20463821/117349884-d2889200-aea3-11eb-8248-90709a7cb04f.png)
+
+- Once logged in, the admin page of the website is shown below, make some changes and see what happens
+![image](https://user-images.githubusercontent.com/20463821/117349997-f055f700-aea3-11eb-9ac6-c94551c8dc4a.png)
+
+- The website page is shown below
+- ![image](https://user-images.githubusercontent.com/20463821/117350654-b9ccac00-aea4-11eb-9ac3-302734ef12e5.png)
 
 
 
