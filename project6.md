@@ -334,10 +334,12 @@ GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<webserver-private-ip>
 ![image](https://user-images.githubusercontent.com/20463821/117349884-d2889200-aea3-11eb-8248-90709a7cb04f.png)
 
 - Once logged in, the admin page of the website is shown below, make some changes and see what happens
+
 ![image](https://user-images.githubusercontent.com/20463821/117349997-f055f700-aea3-11eb-9ac6-c94551c8dc4a.png)
 
 - The website page is shown below
-- ![image](https://user-images.githubusercontent.com/20463821/117350654-b9ccac00-aea4-11eb-9ac3-302734ef12e5.png)
+
+![image](https://user-images.githubusercontent.com/20463821/117350654-b9ccac00-aea4-11eb-9ac3-302734ef12e5.png)
 
 
 
