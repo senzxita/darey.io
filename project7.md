@@ -15,9 +15,11 @@ The architecture diagram above depicts the application has 3 webservers that sha
 
 - Now connect to the instance via ssh `ssh -i keyfile ec2-user@local-ip`
 - In the terminal, use `lsblk` to inspect the block devices attached to the server and also the newly created block devices xvdf, xvdg and xvdh
+
 ![image](https://user-images.githubusercontent.com/20463821/117825506-4a213d00-b267-11eb-9dad-4ae38989a649.png)
 
 - Create single partition for the 3 disks using gdisk utility `sudo gdisk /dev/xvdf`, `sudo gdisk /dev/xvdg` and `sudo gdisk /dev/xvdh`
+
 ![image](https://user-images.githubusercontent.com/20463821/117826857-67a2d680-b268-11eb-8ef5-629d98bb15d2.png)
 
 ![image](https://user-images.githubusercontent.com/20463821/117826953-7be6d380-b268-11eb-9d38-c21e60213225.png)
@@ -32,6 +34,7 @@ The architecture diagram above depicts the application has 3 webservers that sha
 ![image](https://user-images.githubusercontent.com/20463821/117827868-40003e00-b269-11eb-8d32-f2fa2c3328b0.png)
 
 - Mark the 3 disks as physical volumes to be used by LVM using `pvcreate`utility
+
 ![image](https://user-images.githubusercontent.com/20463821/117830181-4b546900-b26b-11eb-88d2-64c43b30be79.png)
 
 - Verify the physical volumes have been created using `sudo pvs`
@@ -63,16 +66,20 @@ The architecture diagram above depicts the application has 3 webservers that sha
 ![image](https://user-images.githubusercontent.com/20463821/117847178-03890e00-b27a-11eb-8915-b5edab3b98cf.png)
 
 - Create a "/mnt directory", where you can mount the logical volumes created, using `touch` command to create apps, logs and opt files in the mnt directory
+
 ![image](https://user-images.githubusercontent.com/20463821/117849747-87dc9080-b27c-11eb-892f-4830ba9574fb.png)
 
 - Mount /mnt/apps on lv-apps logical volume `sudo mount /dev/webserver-vg/lv-apps /mnt/apps` and /mnt/opt on lv-opt logical volume `sudo mount /dev/webserver-vg/lv-opt /mnt/opt`
+
 ![image](https://user-images.githubusercontent.com/20463821/117850041-d558fd80-b27c-11eb-8f71-112fd1f1939a.png)
 
 - Backup all files in the log directory "/var/log" into "/mnt/logs" using `rsync` utility `sudo rsync -av /var/log/. /mnt/logs`
+
 ![image](https://user-images.githubusercontent.com/20463821/117850432-32ed4a00-b27d-11eb-9704-7d54e310bcda.png)
 
 - Mount /var/log on lv-logs logical volume `sudo mount /dev/webserver-vg/lv-logs /var/log`
 - Restore log files in /mnt/logs directory back into /var/log directory `sudo rsync -av /mnt/logs/. /var/log`
+
 ![image](https://user-images.githubusercontent.com/20463821/117851220-01c14980-b27e-11eb-9472-08caca411fa2.png)
 
 - Use `sudo blkid` to find the UUID of each device and copy to a notepad
@@ -80,6 +87,7 @@ The architecture diagram above depicts the application has 3 webservers that sha
 ![image](https://user-images.githubusercontent.com/20463821/117851453-4220c780-b27e-11eb-9b83-ad50e2758077.png)
 
 - To make the mount configuration persist after restart, enter the values of the UUID copied in /etc/fstab using `sudo vi /etc/fstab`
+
 ![image](https://user-images.githubusercontent.com/20463821/117852578-5d400700-b27f-11eb-81c8-2044ec7a3bfe.png)
 
 - Test the configuration `sudo mount -a` and reload daemon `sudo systemctl daemon-reload`
@@ -100,6 +108,7 @@ sudo systemctl status nfs-server.service
 
 - Export the mounts for webservers’ subnet cidr to connect as clients
 - To check the ec2-instance subnet cidr. In the instance details, click on the subnet link
+
 ![image](https://user-images.githubusercontent.com/20463821/117855759-b52c3d00-b282-11eb-8825-e603959af466.png)
 
 ![image](https://user-images.githubusercontent.com/20463821/117855966-f3296100-b282-11eb-9033-7b8606971ccc.png)
@@ -109,4 +118,19 @@ sudo systemctl status nfs-server.service
 ![image](https://user-images.githubusercontent.com/20463821/117856711-dc373e80-b283-11eb-9ec5-f7afc5d311b1.png)
 
 - Restart the NFS server service `sudo systemctl restart nfs-server.service`
-- Configure access to NFS for clients within the same subnet 
+- Configure access to NFS for clients within the same subnet (Subnet CIDR --> 172.31.16.0/20)
+- Open /etc/exports file and place the following configuration in it and save file
+
+![image](https://user-images.githubusercontent.com/20463821/117858802-27eae780-b286-11eb-8d73-a73aa8c102f9.png)
+
+- Run `sudo exportfs -arv` afterwards
+- Check the port NFS runs on `rpcinfo -p | grep nfs`
+
+![image](https://user-images.githubusercontent.com/20463821/117859063-7304fa80-b286-11eb-947e-5c4761664799.png)
+
+- In order for NFS server to be accessible from the client, you have to open ports: TCP 111, UDP 111, UDP 2049 and TCP 2049
+
+![image](https://user-images.githubusercontent.com/20463821/117859654-308fed80-b287-11eb-9149-706a69e71766.png)
+
+## Configure the database server
+
