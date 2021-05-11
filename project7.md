@@ -133,4 +133,77 @@ sudo systemctl status nfs-server.service
 ![image](https://user-images.githubusercontent.com/20463821/117859654-308fed80-b287-11eb-9149-706a69e71766.png)
 
 ## Configure the database server
+- Spin up an EC2-instance name Dbserver with Ubuntu 20.04 base image
+- Connect to the instance using ssh `ssh -i keyfile ubuntu@public-ip`
+- Run `sudo apt update && sudo apt upgrade`
+- Install mysql server on the terminal of the dbserver instance 
+```
+sudo apt install mysql-server
+sudo mysql_secure_installation
+```
+- Login mysql shell `sudo mysql`
+- Create database named tooling `CREATE DATABASE tooling;`
+- Create a user named webaccess and grant it all privileges on the tooling database 
+```
+CREATE USER '<username>'@'<webserver-subnet-cidr>' IDENTIFIED WITH mysql_native_password BY '<userpassword>';
+
+GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<webserver-subnet-cidr>' WITH GRANT OPTION;
+```
+
+![image](https://user-images.githubusercontent.com/20463821/117866273-dabf4380-b28e-11eb-8aed-d3156ae3c088.png)
+
+- Flush privileges and show databases
+
+![image](https://user-images.githubusercontent.com/20463821/117866361-f3c7f480-b28e-11eb-9095-525a75531033.png)
+
+## Prepare the Web Servers
+- Launch a new EC2-instance named "Webserver" with RHEL 8 os base image
+- Connect to the isntance using ssh `ssh -i keyfile ec2-user@public-ip`
+- Make update on the instance `sudo yum -y update`
+- Install NFS client `sudo yum install nfs-utils nfs4-acl-tools -y`
+- Mount /var/www/ and target the NFS server’s export for apps
+```
+sudo mkdir /var/www
+sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www
+```
+
+![image](https://user-images.githubusercontent.com/20463821/117871585-75228580-b295-11eb-99a7-2f70a29f2e26.png)
+
+- Run `df -h` to verify NFS was mounted successfully
+
+![image](https://user-images.githubusercontent.com/20463821/117872047-1578aa00-b296-11eb-9f9a-15cbacaee4cf.png)
+
+- To make the mount configuration persist after restart, edit /etc/fstab file `sudo vi /etc/fstab` and add `<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs defaults 0 0` to the end of the file and save  
+
+![image](https://user-images.githubusercontent.com/20463821/117872329-74d6ba00-b296-11eb-8261-b8616a75f506.png)
+
+- Install Apache server `sudo yum install httpd -y`
+- Create 2 other EC2-intances to serve as the 2 webserver with RHEL 8 os base image
+- Connect to both instances using ssh
+- Run updates on the terminals `sudo yum update -y`
+- Install NFS client `sudo yum install nfs-utils nfs4-acl-tools -y` on both servers
+- Mount /var/www/ and target the NFS server’s export for apps  on both terminals
+```
+sudo mkdir /var/www
+sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www
+```
+- Run `df -h` to verify NFS was mounted successfully on both servers
+
+![image](https://user-images.githubusercontent.com/20463821/117881510-372b5e80-b2a1-11eb-942f-0fe9186b9a5e.png)
+
+- To make the mount configuration persist after restart, edit /etc/fstab file `sudo vi /etc/fstab` and add `<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs defaults 0 0` to the end of the file and save on both servers
+- Install Apache server `sudo yum install httpd -y` on both servers
+- To confirm NFS has been mounted successfully, verify that Apache files and directories are available on the webservers in `var/www` and the NFS server in `/mnt/apps`. If they are all the same, that means NFS was mounted successfully.
+- For webserver-1: ![image](https://user-images.githubusercontent.com/20463821/117883691-9e4a1280-b2a3-11eb-9da7-c217e73ae9de.png)
+
+- For webserver-2: ![image](https://user-images.githubusercontent.com/20463821/117883741-aefa8880-b2a3-11eb-9346-e97a451e716c.png)
+
+- For webserver-3: ![image](https://user-images.githubusercontent.com/20463821/117883813-c76aa300-b2a3-11eb-927e-5f8d701c83c9.png)
+
+- For NFS server:  ![image](https://user-images.githubusercontent.com/20463821/117883870-db160980-b2a3-11eb-8f00-da5a6abaaeff.png)
+
+
+
+
+
 
