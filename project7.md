@@ -182,7 +182,7 @@ sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/ww
 - Connect to both instances using ssh
 - Run updates on the terminals `sudo yum update -y`
 - Install NFS client `sudo yum install nfs-utils nfs4-acl-tools -y` on both servers
-- Mount /var/www/ and target the NFS server’s export for apps  on both terminals
+- Mount /var/www/ and target the NFS server’s export for apps on both terminals
 ```
 sudo mkdir /var/www
 sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www
@@ -201,6 +201,27 @@ sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/ww
 - For webserver-3: ![image](https://user-images.githubusercontent.com/20463821/117883813-c76aa300-b2a3-11eb-927e-5f8d701c83c9.png)
 
 - For NFS server:  ![image](https://user-images.githubusercontent.com/20463821/117883870-db160980-b2a3-11eb-8f00-da5a6abaaeff.png)
+
+- Create a test file in /var/www directory of any of the webserver, check the remaining two webservers if you can find the file there.
+
+- For webserver-1 (where I created the file): ![image](https://user-images.githubusercontent.com/20463821/118043980-fd745980-b36d-11eb-823b-7a69b32ce78d.png)
+
+- For webserver-2: ![image](https://user-images.githubusercontent.com/20463821/118044056-12e98380-b36e-11eb-8ed4-b5fe45dc6b83.png)
+
+- For webserver-3: ![image](https://user-images.githubusercontent.com/20463821/118044143-30b6e880-b36e-11eb-8695-b018f1e07d06.png)
+
+- Locate the log folder for apache in the webserver which `/etc/httpd/logs`
+- Mount /etc/httpd/logs and target the NFS server’s export for logs on the three webservers `sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/logs /etc/httpd/logs`
+
+![image](https://user-images.githubusercontent.com/20463821/118046364-221e0080-b371-11eb-802a-7ae099dd8170.png)
+
+- To make the mount configuration persist after restart, edit /etc/fstab file `sudo vi /etc/fstab` and add `<NFS-Server-Private-IP-Address>:/mnt/logs /etc/httpd/logs nfs defaults 0 0` to the end of the file and save on the three servers
+
+![image](https://user-images.githubusercontent.com/20463821/118046644-8345d400-b371-11eb-8e8a-2a1cc4921f01.png)
+
+- Fork the tooling source code from Darey.io Github Account to your Github account.
+- Clone the repo to one of the webservers
+- 
 
 
 
