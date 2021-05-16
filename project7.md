@@ -219,8 +219,30 @@ sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/ww
 
 ![image](https://user-images.githubusercontent.com/20463821/118046644-8345d400-b371-11eb-8e8a-2a1cc4921f01.png)
 
+## Load the page on the Port
+
 - Fork the tooling source code from Darey.io Github Account to your Github account.
-- Clone the repo to one of the webservers
+- Install git `sudo dnf install git` and clone the repo to one of the webservers `git clone https://github.com/senzxita/tooling.git`
+- Change directory to the tooling folder `cd tooling`
+- Copy the html folder in the tooling folder to /var/www/html directory `sudo cp -r html /var/www/`
+- Open port 80 on AWS Console on the webserver, verify you can view the Apache landing page
+
+![image](https://user-images.githubusercontent.com/20463821/118405337-652cec00-b66f-11eb-8243-86680c8edf85.png)
+
+- Change directory to the html directory `cd html` and list its content `ls`
+- Edit functions.php file `sudo vi functions.php`and the tooling-db.sql script 
+
+![image](https://user-images.githubusercontent.com/20463821/118406860-be981980-b675-11eb-9965-9d11fe93385f.png)
+
+- Back to the Database server, login to the mysqql shell `sudo mysql`, create a new admin user 'myuser' and grant all privileges
+
+![image](https://user-images.githubusercontent.com/20463821/118406950-39613480-b676-11eb-92b2-b68011bfe2eb.png)
+
+![image](https://user-images.githubusercontent.com/20463821/118406999-71687780-b676-11eb-9fc6-2d63e766375a.png)
+
+
+![image](https://user-images.githubusercontent.com/20463821/118405388-99a0a800-b66f-11eb-8d55-9b972486909c.png)
+
 - 
 
 
