@@ -193,10 +193,18 @@ GRANT ALL PRIVILEGES ON <databasename>.* TO '<username>'@'<NFS-Server-private-ip
 ![image](https://user-images.githubusercontent.com/20463821/119411561-854d5280-bce2-11eb-8e70-d58c371b386c.png)
 
 - Connect to the virtual machines using ssh `ssh -i <azurekeyfile> <azureusername>@webserver-public-ip`
-- Make update on the instance `sudo yum -y update`
-- Install NFS client `sudo yum install nfs-utils nfs4-acl-tools -y`
-- Mount /var/www/ and target the NFS server’s export for apps
+- Make update on the three webservers `sudo yum -y update`
+- Install NFS client `sudo yum install nfs-utils nfs4-acl-tools -y` on the three webservers
+- Mount /var/www/ and target the NFS server’s export for apps and run `df -h` to verify NFS was mounted successfully on the three webservers
+
 ![image](https://user-images.githubusercontent.com/20463821/119413986-97c98b00-bce6-11eb-9d82-7187be0c782c.png)
+
+- To make the mount configuration persist after restart, edit /etc/fstab file `sudo vi /etc/fstab` and add `<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs defaults 0 0` to the end of the file and save on the three webservers
+ 
+![image](https://user-images.githubusercontent.com/20463821/119422720-90f84380-bcf9-11eb-9db4-13d112bd9508.png)
+
+- Install Apache server `sudo yum install httpd -y` on the three webservers
+- To confirm NFS has been mounted successfully, verify that Apache files and directories are available on the webservers in var/www and the NFS server in /mnt/apps. If they are all the same, that means NFS was mounted successfully.
 
 
 
